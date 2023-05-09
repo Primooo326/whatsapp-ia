@@ -7,9 +7,9 @@ async function init (){
 const initMsg = `Client is ready! ${new Date()}`;
 
 console.log(initMsg);
-// const client = new Client({
-// 	authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
-// });
+const client = new Client({
+	authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
+});
 
 // client.on("qr", (qr) => {
 // 	console.log("escanea el qr");
