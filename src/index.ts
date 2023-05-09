@@ -22,13 +22,13 @@ client.on("qr", (qr) => {
 
 });
 
-client.on("ready", async () => {
-console.log(initMsg);
+// client.on("ready", async () => {
+// console.log(initMsg);
 
-	const numberId = await client.getNumberId("573196458411");
-	await client.sendMessage(numberId!._serialized, initMsg);
+// 	const numberId = await client.getNumberId("573196458411");
+// 	await client.sendMessage(numberId!._serialized, initMsg);
 
-});
+// });
 
 //     client.on("message", async (message) => {
 //     console.log(message);
