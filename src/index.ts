@@ -11,18 +11,24 @@ const client = new Client({
 	authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
 });
 
-// client.on("qr", (qr) => {
-// 	console.log("escanea el qr");
-// 	qrcode.generate(qr, { small: true });
-// });
+client.on("qr", (qr) => {
+    console.log("escanea el qr");
 
-// client.on("ready", async () => {
-// console.log(initMsg);
+    console.log(
+        'https://chart.googleapis.com/chart?cht=qr&choe=UTF-8&chs=177x177&chl='+qr
+    );
+    
+	// qrcode.generate(qr, { small: true });
 
-// 	const numberId = await client.getNumberId("573196458411");
-// 	await client.sendMessage(numberId!._serialized, initMsg);
+});
 
-// });
+client.on("ready", async () => {
+console.log(initMsg);
+
+	const numberId = await client.getNumberId("573196458411");
+	await client.sendMessage(numberId!._serialized, initMsg);
+
+});
 
 //     client.on("message", async (message) => {
 //     console.log(message);
