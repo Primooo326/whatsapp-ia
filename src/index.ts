@@ -1,43 +1,34 @@
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
+import msg from "./messages";
+console.log("initializing application");
+async function init() {
+	const initMsg = `Client is ready! ${new Date()}`;
 
+	const client = new Client({
+		authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
+	});
 
-async function init (){
+	client.on("qr", (qr) => {
+		console.log("escanea el qr");
 
-const initMsg = `Client is ready! ${new Date()}`;
+		qrcode.generate(qr, { small: true });
+	});
 
-console.log(initMsg);
-const client = new Client({
-	authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
-});
+	client.on("ready", async () => {
+		console.log(initMsg);
 
-client.on("qr", (qr) => {
-    console.log("escanea el qr");
+		const numberId = await client.getNumberId("573196458411");
+		await client.sendMessage(numberId!._serialized, initMsg);
+	});
 
-    console.log(
-        'https://chart.googleapis.com/chart?cht=qr&choe=UTF-8&chs=177x177&chl='+qr
-    );
-    
-	// qrcode.generate(qr, { small: true });
+	client.on("message", async (message) => {
+		console.log(message);
+		await msg(message.body, message.from).then(async (resp: any) => {
+			if (resp) await message.reply(resp.content);
+		});
+	});
 
-});
-
-// client.on("ready", async () => {
-// console.log(initMsg);
-
-// 	const numberId = await client.getNumberId("573196458411");
-// 	await client.sendMessage(numberId!._serialized, initMsg);
-
-// });
-
-//     client.on("message", async (message) => {
-//     console.log(message);
-// 	// await msgFn(message.body, message.from).then(async (resp:any)=>{
-// 	// 	if (resp) await message.reply(resp.content)
-// 	// })
-
-// });
-
-client.initialize();
+	client.initialize();
 }
 init();
