@@ -30,13 +30,13 @@ console.log(initMsg);
 
 });
 
-    client.on("message", async (message) => {
-    console.log(message);
-	// await msgFn(message.body, message.from).then(async (resp:any)=>{
-	// 	if (resp) await message.reply(resp.content)
-	// })
+//     client.on("message", async (message) => {
+//     console.log(message);
+// 	// await msgFn(message.body, message.from).then(async (resp:any)=>{
+// 	// 	if (resp) await message.reply(resp.content)
+// 	// })
 
-});
+// });
 
 client.initialize();
 }
