@@ -72,7 +72,9 @@ function quitarTildes(texto: string) {
 
 	return texto;
 }
-export default async function (msg: string, number: string) {
+export default async function (message:any) {
+	const msg = message.body
+	const number = message.from
 	const regexPollito = /\bpollito\b/i;
 	const regexDatoCurioso = /\bdato curioso\b/i;
 	const regexBuenosDias = /\bbuenos dias\b/i;
@@ -114,12 +116,12 @@ export default async function (msg: string, number: string) {
 		console.log(respuesta);
 		return respuesta;
 	}
-	// else if (regexBuenosDias.test(mensaje)) {
-	// 	respuesta = await ai(
-	// 		"I will give you a date no matter how far in the future it is and you will return a curious fact that happened in the same month and day in the past, use emojis and use a funny tone, do it in Spanish, start the answer with 'a day like today. ..'",
-	// 		new Date().toLocaleDateString(),
-	// 	);
-	// 	console.log(respuesta);
-	// 	return respuesta;
-	// }
+	else if (regexBuenosDias.test(mensaje)) {
+		respuesta = await ai(
+			"I will give you a date no matter how far in the future it is and you will return a curious fact that happened in the same month and day in the past, use emojis and use a funny tone, do it in Spanish, start the answer with 'a day like today. ..'",
+			new Date().toLocaleDateString(),
+		);
+		console.log(respuesta);
+		return respuesta;
+	}
 }
