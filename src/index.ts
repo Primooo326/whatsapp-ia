@@ -1,8 +1,9 @@
 import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import msg from "./messages";
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
+import ffmpeg from 'fluent-ffmpeg';
 console.log("initializing application");
 async function init() {
 	const initMsg = `Client is ready! ${new Date()}`;
@@ -23,7 +24,6 @@ async function init() {
 		const numberId = await client.getNumberId("573196458411");
 		console.log(numberId);
 		try {
-			
 			await client.sendMessage("573196458411@c.us", initMsg);
 		} catch (error) {
 			console.log(error);
@@ -33,35 +33,49 @@ async function init() {
 	client.on("message", async (message) => {
 		console.log(message);
 
-		const chat = client.getChatById("120363149341692638@g.us")
+		const chat = client.getChatById("120363149341692638@g.us");
 		//!Get fechanpm run start
 
 		//!Audio
 		try {
-			
-			if(message.hasMedia && message.type === "audio"){
-				message.downloadMedia().then((audioData)=>{
-					console.log(audioData);
-					const folderPath = 'Audios';
-					audioData.filename == undefined? audioData.filename = message.id.id + ".ogg": audioData.filename = audioData.filename;
-      const filePath = path.join(folderPath, audioData.filename);
-      
-      // Crear la carpeta si no existe
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath);
-      }
-      
-      // Guardar el archivo de audio
-      fs.writeFile(filePath, audioData.data, 'base64', (error) => {
-        if (error) {
-          console.error('Error al guardar el audio:', error);
-        } else {
-          console.log('Audio guardado:', filePath);
-        }
-      });
-				}).catch((err)=>{
-					console.log("err::",err);
-				})
+			if (message.hasMedia && message.type === "audio") {
+				message
+					.downloadMedia()
+					.then((audioData) => {
+						console.log(audioData);
+						const folderPath = "Audios";
+						const filename = message.id.id
+						audioData.filename = filename
+						const filePath = path.join(folderPath, audioData.filename + ".ogg");
+
+						// Crear la carpeta si no existe
+						if (!fs.existsSync(folderPath)) {
+							fs.mkdirSync(folderPath);
+						}
+
+						// Guardar el archivo de audio
+						fs.writeFile(filePath, audioData.data, "base64", (error) => {
+							if (error) {
+								console.error("Error al guardar el audio:", error);
+							} else {
+								console.log("Audio guardado:", filePath);
+							}
+						});
+						var outStream = fs.createWriteStream('./Audios/'+filename+'.mp3');
+
+						ffmpeg()
+						  .input('./Audios/'+ filename)
+						  .audioQuality(96)
+						  .toFormat("mp3")
+						  .on('error', error => console.log(`Encoding Error: ${error.message}`))
+						  .on('exit', () => console.log('Audio recorder exited'))
+						  .on('close', () => console.log('Audio recorder closed'))
+						  .on('end', (data) => console.log('Audio Transcoding succeeded !'))
+						  .pipe(outStream, { end: true });
+					})
+					.catch((err) => {
+						console.log("err::", err);
+					});
 			}
 		} catch (error) {
 			console.log(error);
