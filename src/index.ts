@@ -1,34 +1,50 @@
-import { Client, LocalAuth } from "whatsapp-web.js";
+import { Client, LocalAuth, MessageMedia } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import msg from "./messages";
+import fs from "fs";
+import mime from "mime-types";
+
 console.log("initializing application");
 async function init() {
-	const initMsg = `Client is ready! ${new Date()}`;
+  const initMsg = `Client is ready! ${new Date()}`;
 
-	const client = new Client({
-		authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
-	});
+  const client = new Client({
+    authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
+  });
 
-	client.on("qr", (qr) => {
-		console.log("escanea el qr");
+  client.on("qr", (qr) => {
+    console.log("escanea el qr");
 
-		qrcode.generate(qr, { small: true });
-	});
+    qrcode.generate(qr, { small: true });
+  });
 
-	client.on("ready", async () => {
-		console.log(initMsg);
+  client.on("ready", async () => {
+    console.log(initMsg);
 
-		const numberId = await client.getNumberId("573196458411");
-		await client.sendMessage(numberId!._serialized, initMsg);
-	});
+    const numberId = await client.getNumberId("573196458411");
 
-	client.on("message", async (message) => {
-		console.log(message);
-		await msg(message.body, message.from).then(async (resp: any) => {
-			if (resp) await message.reply(resp.content);
-		});
-	});
+    // !descarga tods los contactos a un archivo excel
+    // let clients: any[] = [];
 
-	client.initialize();
+    // (await client.getChats()).forEach((chat) => {
+    // 	clients.push({ number: chat.id.user, name: chat.name });
+    // });
+
+    // xlsxfun(clients);
+    // const file = "rome.json";
+    // const media = MessageMedia.fromFilePath(file);
+
+    // client.sendMessage(numberId!._serialized, media);
+    await client.sendMessage(numberId!._serialized, initMsg);
+  });
+
+  client.on("message", async (message) => {
+    console.log(message);
+    await msg(message.body, message.from, client).then(async (resp: any) => {
+      if (resp) await message.reply(resp.content);
+    });
+  });
+
+  client.initialize();
 }
 init();
