@@ -1,15 +1,36 @@
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path
-var ffmpeg = require('fluent-ffmpeg')
-  , fs = require('fs')
-  ffmpeg.setFfmpegPath(ffmpegPath)
-var outStream = fs.createWriteStream('./Audios/outputs.mp3');
+import ffmpeg from 'fluent-ffmpeg';
+import fs from 'fs';
+import path from 'path';
 
-ffmpeg()
-  .input('./Audios/7773A1D1B42CCA45C03D7D4EB3D6A34E.ogg')
-  .audioQuality(96)
-  .toFormat("mp3")
-  .on('error', error => console.log(`Encoding Error: ${error.message}`))
-  .on('exit', () => console.log('Audio recorder exited'))
-  .on('close', () => console.log('Audio recorder closed'))
-  .on('end', (data) => console.log('Audio Transcoding succeeded !'))
-  .pipe(outStream, { end: true });
+export const convertAudio = async (path: string): Promise<string> => {
+  const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+  ffmpeg.setFfmpegPath(ffmpegPath);
+
+  const now = `./Audios/outputs-${Date.now()}.mp3`;
+  const outStream = fs.createWriteStream(now);
+
+  await createDirectoryIfNotExists('./Audios');
+
+  await new Promise<void>((resolve, reject) => {
+    ffmpeg(path)
+      .audioQuality(96)
+      .toFormat('mp3')
+      .on('error', error => reject(error))
+      .on('end', () => resolve())
+      .pipe(outStream);
+  });
+
+  return now;
+};
+
+const createDirectoryIfNotExists = (directoryPath: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(directoryPath, { recursive: true }, error => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+};

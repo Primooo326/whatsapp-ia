@@ -75,17 +75,37 @@ function quitarTildes(texto: string) {
 
   return texto;
 }
-export default async function (msg: string, number: string, client: Client) {
+export default async function (msg: string, number: string, isMedia?: boolean) {
   const regexPollito = /\bpollito\b/i;
   const regexDatoCurioso = /\bdato curioso\b/i;
   const regexBuenosDias = /\bbuenos dias\b/i;
+
+  //hacer la funcion de transcribir
+  const regexTranscribir = /\btranscribir\b/i;
+  const regexObservacion = /\bobservacion\b/i;
+
   const pollita = myContacts[0];
 
   const mensaje = quitarTildes(msg.trim().toLocaleLowerCase());
   console.log("msg:::", msg);
   let respuesta;
+  if(isMedia){
+    console.log("es media");
+    const context = `eres un ayudante de un trabajador. te pasare una observación. haz un objetivo, inventa un seguimiento y reemplaza {NOMBRE} por el nombre dado en la observacion.
+    sigue el siguiente ejemplo :
+    "Según la observación inicial, se ha identificado que el adulto mayor, { NOMBRE }, cuenta con una red de apoyo limitada y presenta dificultades cognitivas que dificultan su capacidad para relacionarse con los demás y su entorno. Por lo tanto, se ha establecido el siguiente objetivo para su intervención:
+    
+    Objetivo: Establecer espacios donde { NOMBRE } pueda mejorar su autoestima y facilitar su interacción con el entorno, a través del desarrollo de su capacidad cognitiva. Esto se logrará mediante la implementación de actividades que promuevan el ejercicio cognitivo, fomenten la participación social y fortalezcan su red de apoyo, con el fin de mejorar su bienestar emocional y su calidad de vida.
+    
+    Seguimiento: { NOMBRE } ha expresado que durante los encuentros realizados se ha sentido más acompañado y ha participado en actividades que han contribuido al desarrollo de su potencial cognitivo. Como resultado, ha logrado desenvolverse de manera más efectiva en su entorno. Es importante destacar que todos estos aspectos están interrelacionados y se refuerzan mutuamente."`;
+    const prompt = `Observacion:${msg}`
 
+    return respuesta = await ai(prompt, context);
+  }
   if (pollita.number === number) {
+
+
+
     if (msgBuenasNoches.includes(mensaje)) {
       respuesta = await ai(
         pollita.prompts.buenasnoches.prompt,
@@ -141,3 +161,170 @@ export default async function (msg: string, number: string, client: Client) {
   // 	return respuesta;
   // }
 }
+
+
+
+
+
+
+
+
+//! mensaje 1 y 2 donde puedo ver como el mensaje 2 hace un reply al mensaje 1 por medio del id
+// const req =  {
+//   _data: {
+//     id: {
+//       fromMe: false,
+//       remote: '573118188522@c.us',
+//       id: 'C9F868AD1FB1417392234ABDF30ABD23',
+//       _serialized: 'false_573118188522@c.us_C9F868AD1FB1417392234ABDF30ABD23'
+//     },
+//     body: 'Audio',
+//     type: 'chat',
+//     t: 1688092876,
+//     notifyName: 'Luz Stella Lizarazo',
+//     from: '573118188522@c.us',
+//     to: '573196458411@c.us',
+//     self: 'in',
+//     ack: 1,
+//     isNewMsg: true,
+//     star: false,
+//     kicNotified: false,
+//     recvFresh: true,
+//     isFromTemplate: false,
+//     pollInvalidated: false,
+//     isSentCagPollCreation: false,
+//     latestEditMsgKey: null,
+//     latestEditSenderTimestampMs: null,
+//     broadcast: false,
+//     mentionedJidList: [],
+//     groupMentions: [],
+//     isVcardOverMmsDocument: false,
+//     isForwarded: false,
+//     labels: [],
+//     hasReaction: false,
+//     productHeaderImageRejected: false,
+//     lastPlaybackProgress: 0,
+//     isDynamicReplyButtonsMsg: false,
+//     isMdHistoryMsg: false,
+//     stickerSentTs: 0,
+//     isAvatar: false,
+//     requiresDirectConnection: false,
+//     links: []
+//   },
+//   mediaKey: undefined,
+//   id: {
+//     fromMe: false,
+//     remote: '573118188522@c.us',
+//     id: 'C9F868AD1FB1417392234ABDF30ABD23',
+//     _serialized: 'false_573118188522@c.us_C9F868AD1FB1417392234ABDF30ABD23'
+//   },
+//   ack: 1,
+//   hasMedia: false,
+//   body: 'Audio',
+//   type: 'chat',
+//   timestamp: 1688092876,
+//   from: '573118188522@c.us',
+//   to: '573196458411@c.us',
+//   author: undefined,
+//   deviceType: 'android',
+//   isForwarded: false,
+//   forwardingScore: 0,
+//   isStatus: false,
+//   isStarred: false,
+//   broadcast: false,
+//   fromMe: false,
+//   hasQuotedMsg: false,
+//   hasReaction: false,
+//   duration: undefined,
+//   location: undefined,
+//   vCards: [],
+//   inviteV4: undefined,
+//   mentionedIds: [],
+//   orderId: undefined,
+//   token: undefined,
+//   isGif: false,
+//   isEphemeral: undefined,
+//   links: []
+// }
+// const res =  {
+//   _data: {
+//     id: {
+//       fromMe: false,
+//       remote: '573118188522@c.us',
+//       id: 'A3D2694ECA7B98F8EE53ED539ADE95CF',
+//       _serialized: 'false_573118188522@c.us_A3D2694ECA7B98F8EE53ED539ADE95CF'
+//     },
+//     body: '/transcribir',
+//     type: 'chat',
+//     t: 1688092884,
+//     notifyName: 'Luz Stella Lizarazo',
+//     from: '573118188522@c.us',
+//     to: '573196458411@c.us',
+//     self: 'in',
+//     ack: 1,
+//     isNewMsg: true,
+//     star: false,
+//     kicNotified: false,
+//     recvFresh: true,
+//     isFromTemplate: false,
+//     thumbnail: '',
+//     richPreviewType: 0,
+//     pollInvalidated: false,
+//     isSentCagPollCreation: false,
+//     latestEditMsgKey: null,
+//     latestEditSenderTimestampMs: null,
+//     broadcast: false,
+//     quotedMsg: { type: 'chat', body: 'Audio' },
+//     quotedStanzaID: 'C9F868AD1FB1417392234ABDF30ABD23',
+//     quotedParticipant: '573118188522@c.us',
+//     mentionedJidList: [],
+//     groupMentions: [],
+//     isVcardOverMmsDocument: false,
+//     labels: [],
+//     hasReaction: false,
+//     inviteGrpType: 'DEFAULT',
+//     productHeaderImageRejected: false,
+//     lastPlaybackProgress: 0,
+//     isDynamicReplyButtonsMsg: false,
+//     isMdHistoryMsg: false,
+//     stickerSentTs: 0,
+//     isAvatar: false,
+//     requiresDirectConnection: false,
+//     links: []
+//   },
+//   mediaKey: undefined,
+//   id: {
+//     fromMe: false,
+//     remote: '573118188522@c.us',
+//     id: 'A3D2694ECA7B98F8EE53ED539ADE95CF',
+//     _serialized: 'false_573118188522@c.us_A3D2694ECA7B98F8EE53ED539ADE95CF'
+//   },
+//   ack: 1,
+//   hasMedia: false,
+//   body: '/transcribir',
+//   type: 'chat',
+//   timestamp: 1688092884,
+//   from: '573118188522@c.us',
+//   to: '573196458411@c.us',
+//   author: undefined,
+//   deviceType: 'android',
+//   isForwarded: undefined,
+//   forwardingScore: 0,
+//   isStatus: false,
+//   isStarred: false,
+//   broadcast: false,
+//   fromMe: false,
+//   hasQuotedMsg: true,
+//   hasReaction: false,
+//   duration: undefined,
+//   location: undefined,
+//   vCards: [],
+//   inviteV4: undefined,
+//   mentionedIds: [],
+//   orderId: undefined,
+//   token: undefined,
+//   isGif: false,
+//   isEphemeral: undefined,
+//   links: []
+// }
+

@@ -1,47 +1,38 @@
 import axios from 'axios';
 import fs from 'fs';
+const FormData = require('form-data');
 export default async function transcribeAudio(audioFilePath) {
+
+
+
+const token = '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'; // Reemplaza 'TOKEN' con tu token de autorización
+const model = 'whisper-1'; // Modelo de transcripción a utilizar
+
+async function uploadAudioForTranscription() {
   try {
-    // Leer el archivo de audio como base64
-    const audioData = fs.readFileSync(audioFilePath, 'base64');
+    const form = new FormData();
+    form.append('file', fs.createReadStream(audioFilePath));
+    form.append('model', model);
+    form.append('language', 'es');
+    form.append('response_format', 'text');
+    form.append('temperature', 0.2);
 
-    // Configurar la solicitud HTTP POST
-    const url = 'https://api.openai.com/v1/audio/transcriptions';
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer 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' // Reemplaza con tu clave de API de OpenAI
-    };
-    const data = {
-      'inputs': {
-        'audio': audioData,
-        'content_type': 'audio/mp3'
-      },
-      'output_config': {
-        'speech_to_text': true
+
+    const response = await axios.post('https://api.openai.com/v1/audio/transcriptions', form, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': `multipart/form-data; boundary=${form._boundary}`
       }
-    };
+    });
 
-    // Enviar la solicitud HTTP POST
-    const response = await axios.post(url, data, { headers });
-
-    // Obtener la transcripción del texto
-    const transcription = response;
-	console.log(transcription);
-
-    return transcription;
+    return response.data;
   } catch (error) {
-    console.error('Error al transcribir el audio:', error);
-    throw error;
+    return error
   }
 }
 
-// Ejemplo de uso
-const audioFilePath = './Audios/outputs.mp3';
+return await uploadAudioForTranscription();
 
-transcribeAudio(audioFilePath)
-  .then((transcription) => {
-    console.log('Transcripción del audio:', transcription);
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+}
+
+
