@@ -2,7 +2,7 @@ import { Configuration, OpenAIApi } from "openai"
 
 export default async function (prompt:string,context:string) {
 const configuration = new Configuration({
-	apiKey: "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",
+	apiKey: "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",
 });
     const openai = new OpenAIApi(configuration)
 
@@ -15,6 +15,7 @@ const configuration = new Configuration({
                 { role: "user", content: context }
             ]
         })
+        console.log(completion);
         return completion.data.choices[0].message;
     } catch (error) {
         return error

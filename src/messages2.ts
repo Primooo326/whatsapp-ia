@@ -33,8 +33,7 @@ const messageFuncion = async (message: WAWebJS.Message) => {
     try {
       const mediaToDownload = await message.getQuotedMessage();
       console.log(mediaToDownload);
-      if (
-        mediaToDownload.hasMedia) {
+      if (mediaToDownload.hasMedia) {
         const mediaData = await mediaToDownload.downloadMedia();
         const filePath = `./Audios/${Date.now()}.ogg`;
         fs.writeFileSync(filePath, mediaData.data, "base64");
@@ -42,19 +41,17 @@ const messageFuncion = async (message: WAWebJS.Message) => {
         console.log("Audio descargado con éxito:", audioConverted);
         await transcribeAudio(audioConverted)
           .then(async (transcription) => {
-            await message.reply( transcription);
+            await message.reply(transcription);
             console.log("Transcripción del audio:::", transcription);
-            fs.unlinkSync(filePath)
-            fs.unlinkSync(audioConverted)
+            fs.unlinkSync(filePath);
+            fs.unlinkSync(audioConverted);
           })
           .catch((error) => {
             console.error("Error:", error);
             message.reply("Hubo un error, intente de mas tarde");
-            fs.unlinkSync(filePath)
-            fs.unlinkSync(audioConverted)
+            fs.unlinkSync(filePath);
+            fs.unlinkSync(audioConverted);
           });
-
-          
       } else {
         console.log(mediaToDownload.type);
         message.reply("El mensaje no tiene audio");
@@ -81,6 +78,7 @@ const messageFuncion = async (message: WAWebJS.Message) => {
         const prompt = `Observacion:${text}`;
 
         const respuesta: any = await ai(prompt, context);
+        console.log("respuesta de observacion", respuesta.content);
         await message.reply(respuesta.content);
       } else {
         message.reply("El mensaje no tiene texto");

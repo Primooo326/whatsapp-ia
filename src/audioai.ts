@@ -34,5 +34,3 @@ async function uploadAudioForTranscription() {
 return await uploadAudioForTranscription();
 
 }
-
-
