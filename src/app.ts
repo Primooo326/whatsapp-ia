@@ -1,10 +1,7 @@
-import { Client, LocalAuth, MessageMedia } from "whatsapp-web.js";
+import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import msg from "./messages2";
-import mime from "mime-types";
 import fs from "fs";
-import { convertAudio } from "./converAudio";
-import transcribeAudio from "./audioai";
 
 console.log("initializing application");
 async function init() {
@@ -12,6 +9,9 @@ async function init() {
 
   const client = new Client({
     authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
+    puppeteer: {
+      args: ['--no-sandbox'],
+    }
   });
 
   client.on("qr", (qr) => {
@@ -34,12 +34,16 @@ async function init() {
   });
 
   client.on("message", async (message) => {
-    // console.log(message);
-
     await msg(message)
   });
 
 
   client.initialize();
 }
-init();
+try {
+  
+  init();
+} catch (error) {
+  console.log(error);
+  init();
+}

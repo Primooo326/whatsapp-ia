@@ -1,11 +1,12 @@
 import axios from 'axios';
 import fs from 'fs';
 const FormData = require('form-data');
+import config from './config';
 export default async function transcribeAudio(audioFilePath) {
 
 
 
-const token = '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'; // Reemplaza 'TOKEN' con tu token de autorización
+const token = config.APIKEY; // Reemplaza 'TOKEN' con tu token de autorización
 const model = 'whisper-1'; // Modelo de transcripción a utilizar
 
 async function uploadAudioForTranscription() {

@@ -1,8 +1,9 @@
 import { Configuration, OpenAIApi } from "openai"
+import config from './config';
 
 export default async function (prompt:string,context:string) {
 const configuration = new Configuration({
-	apiKey: "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",
+	apiKey: config.APIKEY,
 });
     const openai = new OpenAIApi(configuration)
 

@@ -3,3 +3,4 @@ dist/*
 node_modules/*
 session/*
 Audios/*
+.wwebjs_cache/*
