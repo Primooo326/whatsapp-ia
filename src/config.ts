@@ -1,6 +1,14 @@
-import { config } from "dotenv";
-config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const PORT = process.env.PORT || 3000;
-const APIKEY = process.env.APIKEY || "YOUR_API_KEY";
-export default {PORT, APIKEY}
+const PORT: number = Number(process.env.PORT) || 3000;
+const APIKEY: string = process.env.APIKEY || "YOUR_API_KEY";
+
+
+const config = {
+    PORT,
+    APIKEY,
+};
+console.log(config)
+
+export default config;

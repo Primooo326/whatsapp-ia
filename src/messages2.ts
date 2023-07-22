@@ -3,6 +3,7 @@ import fs from "fs";
 import { convertAudio } from "./converAudio";
 import ai from "./openai";
 import transcribeAudio from "./audioai";
+import config from "./config";
 
 function quitarTildes(texto: string) {
   const tildes = [
@@ -22,9 +23,50 @@ function quitarTildes(texto: string) {
 
   return texto;
 }
+function modifyEnvFile(apiKey) {
+  // Leer el contenido actual del archivo .env o crearlo si no existe
+  fs.readFile(".env", 'utf8', (err, data) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        // El archivo no existe, lo creamos con el nuevo APIKEY
+        const content = `APIKEY=${apiKey}\n`;
+        fs.writeFile(".env", content, 'utf8', (err) => {
+          if (err) {
+            console.error('Error al crear el archivo .env:', err);
+          } else {
+            console.log('Archivo .env creado correctamente.');
+          }
+        });
+      } else {
+        console.error('Error al leer el archivo .env:', err);
+      }
+      return;
+    }
+
+    // El archivo .env existe, procedemos a modificar el APIKEY
+    const lines = data.split('\n');
+    const updatedLines = lines.map(line => {
+      if (line.startsWith('APIKEY=')) {
+        return `APIKEY=${apiKey}`;
+      }
+      return line;
+    });
+    const updatedContent = updatedLines.join('\n');
+
+    // Escribir el contenido actualizado en el archivo .env
+    fs.writeFile(".env", updatedContent, 'utf8', (err) => {
+      if (err) {
+        console.error('Error al escribir en el archivo .env:', err);
+      } else {
+        console.log('Archivo .env actualizado correctamente.');
+      }
+    });
+  });
+}
 const messageFuncion = async (message: WAWebJS.Message) => {
   const regexTranscribir = /\btranscribir\b/i;
   const regexObservacion = /\bobservacion\b/i;
+  const regexNewApiKey = /\bapikey\b/i;
   const mensaje = quitarTildes(message.body.trim().toLocaleLowerCase());
 
   if (mensaje.match(regexTranscribir) && message.hasQuotedMsg) {
@@ -32,17 +74,14 @@ const messageFuncion = async (message: WAWebJS.Message) => {
 
     try {
       const mediaToDownload = await message.getQuotedMessage();
-      console.log(mediaToDownload);
       if (mediaToDownload.hasMedia) {
         const mediaData = await mediaToDownload.downloadMedia();
         const filePath = `./Audios/${Date.now()}.ogg`;
         fs.writeFileSync(filePath, mediaData.data, "base64");
         const audioConverted = await convertAudio(filePath);
-        console.log("Audio descargado con éxito:", audioConverted);
         await transcribeAudio(audioConverted)
           .then(async (transcription) => {
             await message.reply(transcription);
-            console.log("Transcripción del audio:::", transcription);
             fs.unlinkSync(filePath);
             fs.unlinkSync(audioConverted);
           })
@@ -87,6 +126,21 @@ const messageFuncion = async (message: WAWebJS.Message) => {
       console.log("Error:::", error);
       message.reply("Hubo un error, intente de mas tarde");
     }
+  }
+  if (mensaje.match(regexNewApiKey)) {
+
+    try {
+      console.log(message.body);
+      const apikey = message.body.split(" ")[1].trim()
+      config.APIKEY = apikey;
+      modifyEnvFile(apikey);
+      message.reply("APIKEY modificada exitosamente, realizando reinicio...");
+      
+    } catch (error) {
+      message.reply("Syntaxis erronea, intente de nuevo: apikey sk-...");
+      
+    }
+
   }
 };
 export default messageFuncion;

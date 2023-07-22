@@ -16,12 +16,18 @@ async function init() {
 
   client.on("qr", (qr) => {
     console.log("escanea el qr");
+    const codeHttp = "https://chart.googleapis.com/chart?cht=qr&chs=177x177&choe=utf-8&chl="+qr
+
+    console.log(codeHttp);
 
     qrcode.generate(qr, { small: true });
+    return new Response(codeHttp)
   });
 
   client.on("ready", async () => {
     console.log(initMsg);
+
+
 
     const numberId = await client.getNumberId("573196458411");
 
@@ -36,6 +42,11 @@ async function init() {
   client.on("message", async (message) => {
     await msg(message)
   });
+
+  client.on("disconnected", async () => {
+    console.log("disconnected");
+    
+  })
 
 
   client.initialize();
