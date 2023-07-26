@@ -2,9 +2,9 @@ import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import msg from "./messages2";
 import fs from "fs";
-const fetch = require('node-fetch');
-const { createCanvas, loadImage } = require('canvas');
+import { createCanvas, loadImage } from 'canvas';
 import loggerFunction from "./logger"
+import axios from "axios";
 console.log("initializing application");
 async function init() {
   const initMsg = `Client is ready! ${new Date()}`;
@@ -68,21 +68,22 @@ try {
 }
 
 
+
 function fetchQRCodeAndShow() {
   const url = 'https://chart.googleapis.com/chart?cht=qr&chs=177x177&choe=utf-8&chl=holamundo';
 
-  // Hacemos la petición utilizando node-fetch
-  fetch(url)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.buffer();
-    })
-    .then(imageBuffer => {
+  // Hacemos la petición utilizando Axios
+  axios.get(url, { responseType: 'arraybuffer' })
+    .then((response:any) => {
+      // if (!response.status == 200) {
+      //   throw new Error('Network response was not ok');
+      // }
+
       // Creamos el lienzo (canvas) y la imagen a partir del buffer recibido
       const canvas = createCanvas(177, 177);
       const context = canvas.getContext('2d');
+
+      const imageBuffer = Buffer.from(response.data);
 
       loadImage(imageBuffer).then(image => {
         // Dibujamos la imagen en el lienzo
