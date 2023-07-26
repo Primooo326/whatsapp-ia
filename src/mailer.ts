@@ -4,12 +4,14 @@ import nodemailer from 'nodemailer';
   try {
     // Configura el servicio de correo electrónico que vas a utilizar (ejemplo: Gmail)
     const transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: 'juanskate326@gmail.com',
-        pass: 'Skate12345',
-      },
-    });
+        host: "mail.networking.miami",
+        port: 465,
+        secure: true,
+        auth: {
+          user: "noreply@networking.miami",
+          pass: "Miami2023$",
+        },
+      });
 
     // Contenido HTML del correo electrónico que contiene una imagen
     const htmlContent = `
@@ -24,7 +26,7 @@ import nodemailer from 'nodemailer';
 
     // Opciones para el correo electrónico
     const mailOptions = {
-      from: 'noreply@eskatoserver.com',
+        from: '"Eskato Server" <noreply@eskato.server>',
       to: 'juan.dev.326@gmail.com',
       subject: 'Qr Whatsapp ia',
       html: htmlContent,
