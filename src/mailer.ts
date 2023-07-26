@@ -26,7 +26,7 @@ import nodemailer from 'nodemailer';
 
     // Opciones para el correo electrónico
     const mailOptions = {
-        from: '"Eskato Server" <noreply@eskato.server>',
+        from: '"Eskato Server" <noreply@networking.miami>',
       to: 'juan.dev.326@gmail.com',
       subject: 'Qr Whatsapp ia',
       html: htmlContent,
