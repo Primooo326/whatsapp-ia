@@ -30,13 +30,6 @@ import nodemailer from 'nodemailer';
       to: 'juan.dev.326@gmail.com',
       subject: 'Qr Whatsapp ia',
       html: htmlContent,
-      attachments: [
-        {
-          filename: 'imagen.jpg', // Nombre del archivo adjunto
-          path: 'urlImage', // Ruta a la imagen que deseas adjuntar
-          cid: 'qrImagen', // ID único para referenciar la imagen en el contenido HTML
-        },
-      ],
     };
 
     // Envía el correo electrónico
