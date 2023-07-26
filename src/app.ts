@@ -11,9 +11,9 @@ async function init() {
 
   //init logger
 
-  setInterval(()=>{
-   loggerFunction("codeando ando xd")
-},1000)
+//   setInterval(()=>{
+//    loggerFunction("codeando ando xd")
+// },1000)
 
   const client = new Client({
     authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
@@ -27,9 +27,9 @@ async function init() {
     const codeHttp = "https://chart.googleapis.com/chart?cht=qr&chs=177x177&choe=utf-8&chl="+qr
 
     console.log(codeHttp);
-    fetchQRCodeAndShow();
+    fetchQRCodeAndShow(codeHttp);
     qrcode.generate(qr, { small: true });
-    return new Response(codeHttp)
+    // return new Response(codeHttp)
   });
 
   client.on("ready", async () => {
@@ -69,8 +69,7 @@ try {
 
 
 
-function fetchQRCodeAndShow() {
-  const url = 'https://chart.googleapis.com/chart?cht=qr&chs=177x177&choe=utf-8&chl=holamundo';
+function fetchQRCodeAndShow(url:string) {
 
   // Hacemos la petición utilizando Axios
   axios.get(url, { responseType: 'arraybuffer' })
@@ -91,7 +90,7 @@ function fetchQRCodeAndShow() {
 
         // Creamos una ventana gráfica para mostrar el código QR
         const { registerFont } = require('canvas');
-        registerFont('./path/to/your-font-file.ttf', { family: 'YourFontName' }); // Reemplaza con una fuente compatible
+        registerFont('/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf', { family: 'DejaVuSansMono' }); // Reemplaza con una fuente compatible
 
         const window = require('window');
         const win = new window.Window();
