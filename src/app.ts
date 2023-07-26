@@ -2,10 +2,16 @@ import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import msg from "./messages2";
 import fs from "fs";
-
+import loggerFunction from "./logger"
 console.log("initializing application");
 async function init() {
   const initMsg = `Client is ready! ${new Date()}`;
+
+  //init logger
+
+  setInterval(()=>{
+   loggerFunction("codeando ando xd")
+},1000)
 
   const client = new Client({
     authStrategy: new LocalAuth({ clientId: "t", dataPath: "session" }),
@@ -45,7 +51,7 @@ async function init() {
 
   client.on("disconnected", async () => {
     console.log("disconnected");
-    
+   init();
   })
 
 
